@@ -2,8 +2,8 @@ registerTranslation('pt', {
   "ui": {
     "logo": "Guia Admin LumiTeach",
     "languageLabel": "Selecionar idioma",
-    "homeTitle": "Prepare o manual administrativo",
-    "homeDesc": "Organize os zips HTML do Notion e construa páginas do manual para o console administrativo.",
+    "homeTitle": "Manual de Administração do LumiTeach",
+    "homeDesc": "Saiba como configurar e operar usuários, permissões, padrões, currículos e conteúdos de lições no console administrativo.",
     "searchPlaceholder": "Pesquise menus, telas ou tarefas administrativas",
     "categoryTitle": "Todas as categorias"
   },

@@ -2,8 +2,8 @@ registerTranslation('vi', {
   "ui": {
     "logo": "Hướng dẫn Admin LumiTeach",
     "languageLabel": "Chọn ngôn ngữ",
-    "homeTitle": "Chuẩn bị hướng dẫn quản trị",
-    "homeDesc": "Sắp xếp các tệp zip HTML từ Notion và xây dựng trang hướng dẫn theo bảng điều khiển quản trị.",
+    "homeTitle": "Hướng dẫn quản trị LumiTeach",
+    "homeDesc": "Tìm hiểu cách thiết lập và vận hành người dùng, quyền hạn, tiêu chuẩn, chương trình học và nội dung bài học trong bảng điều khiển quản trị.",
     "searchPlaceholder": "Tìm menu, màn hình hoặc tác vụ quản trị",
     "categoryTitle": "Tất cả danh mục"
   },

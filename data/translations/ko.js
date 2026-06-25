@@ -2,8 +2,8 @@ registerTranslation('ko', {
   "ui": {
     "logo": "LumiTeach Admin Guide",
     "languageLabel": "언어 선택",
-    "homeTitle": "관리자 매뉴얼을 준비합니다",
-    "homeDesc": "관리자 화면을 기준으로 Notion HTML zip을 정리하고 매뉴얼 페이지로 구성합니다.",
+    "homeTitle": "LumiTeach 관리자 매뉴얼",
+    "homeDesc": "관리자 콘솔에서 회원, 권한, 기준 정보, 교육과정, 레슨 콘텐츠를 설정하고 운영하는 방법을 안내합니다.",
     "searchPlaceholder": "관리자 메뉴, 화면명, 작업명을 검색해보세요",
     "categoryTitle": "전체 카테고리"
   },

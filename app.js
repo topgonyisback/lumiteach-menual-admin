@@ -93,6 +93,7 @@ function renderRichText(value) {
   const html = [];
   let paragraph = [];
   let listItems = [];
+  let orderedItems = [];
   let quoteLines = [];
 
   const flushParagraph = () => {
@@ -107,6 +108,12 @@ function renderRichText(value) {
     listItems = [];
   };
 
+  const flushOrderedList = () => {
+    if (!orderedItems.length) return;
+    html.push(`<ol>${orderedItems.map((item) => `<li>${formatInline(item)}</li>`).join('')}</ol>`);
+    orderedItems = [];
+  };
+
   const flushQuote = () => {
     if (!quoteLines.length) return;
     html.push(`<blockquote>${renderRichText(quoteLines.join('\n'))}</blockquote>`);
@@ -119,6 +126,7 @@ function renderRichText(value) {
     if (!trimmed) {
       flushParagraph();
       flushList();
+      flushOrderedList();
       flushQuote();
       return;
     }
@@ -126,6 +134,7 @@ function renderRichText(value) {
     if (trimmed.startsWith('[[table:') && trimmed.endsWith(']]')) {
       flushParagraph();
       flushList();
+      flushOrderedList();
       flushQuote();
       html.push(renderManualTable(trimmed.slice(8, -2)));
       return;
@@ -134,6 +143,7 @@ function renderRichText(value) {
     if (trimmed.startsWith('[[image:') && trimmed.endsWith(']]')) {
       flushParagraph();
       flushList();
+      flushOrderedList();
       flushQuote();
 
       const imageKey = trimmed.slice(8, -2);
@@ -160,6 +170,7 @@ function renderRichText(value) {
     if (trimmed.startsWith('[[callout:') && trimmed.endsWith(']]')) {
       flushParagraph();
       flushList();
+      flushOrderedList();
       flushQuote();
 
       const calloutValue = trimmed.slice(10, -2);
@@ -187,25 +198,36 @@ function renderRichText(value) {
 
     flushQuote();
 
+    if (/^\d+\.\s+/.test(trimmed)) {
+      flushParagraph();
+      flushList();
+      orderedItems.push(trimmed.replace(/^\d+\.\s+/, ''));
+      return;
+    }
+
     if (trimmed.startsWith('### ')) {
       flushParagraph();
       flushList();
+      flushOrderedList();
       html.push(`<h3>${formatInline(trimmed.slice(4))}</h3>`);
       return;
     }
 
     if (trimmed.startsWith('- ')) {
       flushParagraph();
+      flushOrderedList();
       listItems.push(trimmed.slice(2));
       return;
     }
 
     flushList();
+    flushOrderedList();
     paragraph.push(trimmed);
   });
 
   flushParagraph();
   flushList();
+  flushOrderedList();
   flushQuote();
 
   return html.join('');

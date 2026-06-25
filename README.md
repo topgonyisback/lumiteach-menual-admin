@@ -12,8 +12,9 @@
 - `data/translations.js`: Admin Guide 번역 registry
 - `data/translations/`: 언어별 번역 데이터 (`ko.js`, `en.js`, `pt.js`, `es.js`, `ja.js`, `vi.js`)
 - `lumiteach_assets/manual/`: 언어별 매뉴얼 캡처 이미지
-  - `en/`: 현재 기본 fallback 이미지
-  - `ko/`, `pt/`, `es/`, `ja/`, `vi/`: 언어별 캡처 교체용 폴더
+  - `ko/`: 중심 언어 이미지 폴더
+  - `en/`: 현재 보유한 영어 캡처 fallback 이미지 폴더
+  - `pt/`, `es/`, `ja/`, `vi/`: 언어별 캡처 교체용 폴더
 - `notion_html_zips/`: 페이지별로 추출한 Notion HTML zip을 넣는 폴더
 
 ## 작업 흐름
@@ -27,6 +28,7 @@
 ## 언어별 이미지 규칙
 
 - 현재 선택된 언어가 `ja`라면 `lumiteach_assets/manual/ja/...` 이미지를 먼저 표시합니다.
-- 해당 언어 이미지가 없으면 `lumiteach_assets/manual/en/...` 이미지를 fallback으로 표시합니다.
+- 해당 언어 이미지가 없으면 중심 언어인 `lumiteach_assets/manual/ko/...` 이미지를 fallback으로 확인합니다.
+- `ko` 이미지도 없으면 현재 보유한 영어 캡처인 `lumiteach_assets/manual/en/...` 이미지를 fallback으로 표시합니다.
 - 예전 공통 경로(`lumiteach_assets/manual/...`)도 마지막 fallback으로 유지합니다.
-- 따라서 새 언어 캡처를 추가할 때는 본문 데이터를 수정하지 않고, 동일한 파일명과 폴더 구조로 이미지만 추가하면 됩니다.
+- 모든 언어 폴더는 동일한 하위 페이지 폴더 구조를 유지합니다. 새 언어 캡처를 추가할 때는 본문 데이터를 수정하지 않고, 동일한 파일명과 폴더 구조로 이미지만 추가하면 됩니다.

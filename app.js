@@ -18,7 +18,7 @@ function formatInline(value) {
 }
 
 const manualImageBasePath = 'lumiteach_assets/manual';
-const defaultManualImageLanguage = 'en';
+const fallbackManualImageLanguage = 'en';
 
 function normalizeManualImagePath(imagePath) {
   return String(imagePath || '').replace(/^\/+/, '');
@@ -29,7 +29,8 @@ function getManualImageCandidates(imagePath) {
   const language = currentLanguage || defaultLanguage;
   const candidates = [
     `${manualImageBasePath}/${language}/${normalizedPath}`,
-    `${manualImageBasePath}/${defaultManualImageLanguage}/${normalizedPath}`,
+    `${manualImageBasePath}/${defaultLanguage}/${normalizedPath}`,
+    `${manualImageBasePath}/${fallbackManualImageLanguage}/${normalizedPath}`,
     `${manualImageBasePath}/${normalizedPath}`
   ];
 

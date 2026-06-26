@@ -3,7 +3,7 @@ registerTranslation('en', {
     "logo": "LumiTeach Admin Guide",
     "languageLabel": "Select language",
     "homeTitle": "LumiTeach Admin Manual",
-    "homeDesc": "Learn how to configure and operate users, permissions, standards, curricula, and lesson content in the admin console.",
+    "homeDesc": "Learn how to configure users, permissions, standards, curricula, and lesson content in the admin console\nand operate them.",
     "searchPlaceholder": "Search admin menus, screens, or tasks",
     "categoryTitle": "All Categories"
   },

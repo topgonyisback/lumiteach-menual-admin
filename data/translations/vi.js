@@ -3,7 +3,7 @@ registerTranslation('vi', {
     "logo": "Hướng dẫn Admin LumiTeach",
     "languageLabel": "Chọn ngôn ngữ",
     "homeTitle": "Hướng dẫn quản trị LumiTeach",
-    "homeDesc": "Tìm hiểu cách thiết lập và vận hành người dùng, quyền hạn, tiêu chuẩn, chương trình học và nội dung bài học trong bảng điều khiển quản trị.",
+    "homeDesc": "Tìm hiểu cách thiết lập người dùng, quyền hạn, tiêu chuẩn, chương trình học và nội dung bài học trong bảng điều khiển quản trị\nvà cách vận hành các mục đó.",
     "searchPlaceholder": "Tìm menu, màn hình hoặc tác vụ quản trị",
     "categoryTitle": "Tất cả danh mục"
   },

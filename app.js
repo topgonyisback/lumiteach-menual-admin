@@ -788,6 +788,32 @@ function getRenderableSections(article) {
   }));
 }
 
+function getHeadingTocTarget(heading, index) {
+  if (heading.matches('h2')) {
+    const section = heading.closest('.article-section');
+    if (section?.id) return section.id;
+  }
+
+  if (!heading.id) heading.id = `toc-heading-${index + 1}`;
+  return heading.id;
+}
+
+function renderRightToc() {
+  const rightToc = document.getElementById('rightToc');
+  const articleContent = document.getElementById('articleContent');
+  const headings = Array.from(articleContent.querySelectorAll('.article-title, .article-section > h2, .section-copy h3'))
+    .filter((heading) => heading.textContent.trim());
+
+  rightToc.innerHTML = headings.length ? `
+    <div class="toc-title">${escapeHtml(tFixed('onThisPage'))}</div>
+    ${headings.map((heading, index) => {
+      const level = Number(heading.tagName.slice(1));
+      const targetId = getHeadingTocTarget(heading, index);
+      return `<a class="toc-link toc-link-level-${level}" href="#${targetId}">${escapeHtml(heading.textContent.trim())}</a>`;
+    }).join('')}
+  ` : '';
+}
+
 function renderArticle(key) {
   const sourceArticle = findArticle(key);
   const article = localizeArticle(sourceArticle);
@@ -863,11 +889,7 @@ function renderArticle(key) {
     </div>
   `;
 
-  const tocLinks = renderableSections.filter((section) => section.showTitle && section.title.trim());
-  document.getElementById('rightToc').innerHTML = tocLinks.length ? `
-    <div class="toc-title">${escapeHtml(tFixed('onThisPage'))}</div>
-    ${tocLinks.map((section) => `<a class="toc-link" href="#section-${section.index + 1}">${escapeHtml(section.title)}</a>`).join('')}
-  ` : '';
+  renderRightToc();
 }
 
 function routeUrlFor(hash = '') {

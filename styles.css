@@ -187,6 +187,7 @@ body.mobile-nav-open .menu-toggle::after { transform: translateY(-6px) rotate(-4
   margin: 16px 0 28px;
   color: var(--muted);
   font-size: 18px;
+  white-space: pre-line;
 }
 
 .search-wrap {
@@ -911,9 +912,31 @@ body.mobile-nav-open .menu-toggle::after { transform: translateY(-6px) rotate(-4
   text-decoration: none;
 }
 
+.toc-link-level-1 {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.toc-link-level-2 {
+  margin-left: 10px;
+}
+
+.toc-link-level-3 {
+  margin-left: 22px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  color: #777;
+  font-size: 13px;
+}
+
 .toc-link:hover, .toc-link.active {
   background: var(--hover);
   color: var(--text);
+}
+
+.article-title,
+.section-copy h3 {
+  scroll-margin-top: 96px;
 }
 
 .hub-layout {

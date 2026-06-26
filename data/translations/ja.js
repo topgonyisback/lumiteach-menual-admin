@@ -3,7 +3,7 @@ registerTranslation('ja', {
     "logo": "LumiTeach Admin Guide",
     "languageLabel": "言語を選択",
     "homeTitle": "LumiTeach管理者マニュアル",
-    "homeDesc": "管理コンソールでユーザー、権限、基準情報、カリキュラム、授業コンテンツを設定・運用する方法を案内します。",
+    "homeDesc": "管理者コンソールでユーザー、権限、基準情報、カリキュラム、授業コンテンツを設定し、\n運用する方法を案内します。",
     "searchPlaceholder": "管理メニュー、画面名、作業名で検索",
     "categoryTitle": "すべてのカテゴリー"
   },

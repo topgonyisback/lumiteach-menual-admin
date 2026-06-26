@@ -3,7 +3,7 @@ registerTranslation('es', {
     "logo": "Guía Admin LumiTeach",
     "languageLabel": "Seleccionar idioma",
     "homeTitle": "Manual de administración de LumiTeach",
-    "homeDesc": "Aprende a configurar y gestionar usuarios, permisos, estándares, currículos y contenido de lecciones en la consola administrativa.",
+    "homeDesc": "Aprende a configurar usuarios, permisos, estándares, currículos y contenido de lecciones en la consola administrativa\ny a gestionarlos.",
     "searchPlaceholder": "Busca menús, pantallas o tareas administrativas",
     "categoryTitle": "Todas las categorías"
   },

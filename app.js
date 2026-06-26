@@ -110,7 +110,9 @@ function renderRichText(value) {
 
   const flushOrderedList = () => {
     if (!orderedItems.length) return;
-    html.push(`<ol>${orderedItems.map((item) => `<li>${formatInline(item)}</li>`).join('')}</ol>`);
+    const start = orderedItems[0].number;
+    const startAttribute = start && start !== 1 ? ` start="${start}"` : '';
+    html.push(`<ol${startAttribute}>${orderedItems.map((item) => `<li>${formatInline(item.text)}</li>`).join('')}</ol>`);
     orderedItems = [];
   };
 
@@ -125,8 +127,6 @@ function renderRichText(value) {
 
     if (!trimmed) {
       flushParagraph();
-      flushList();
-      flushOrderedList();
       flushQuote();
       return;
     }
@@ -180,10 +180,10 @@ function renderRichText(value) {
       html.push(`
         <aside class="section-callout">
           <span class="section-callout-icon" aria-hidden="true">${escapeHtml(icon)}</span>
-          <span>
+          <div class="section-callout-content">
             ${title ? `<strong>${formatInline(title)}</strong>` : ''}
-            <span class="section-callout-body">${renderRichText(body)}</span>
-          </span>
+            <div class="section-callout-body">${renderRichText(body)}</div>
+          </div>
         </aside>
       `);
       return;
@@ -198,18 +198,24 @@ function renderRichText(value) {
 
     flushQuote();
 
-    if (/^\d+\.\s+/.test(trimmed)) {
+    const orderedMatch = trimmed.match(/^(\d+)\.\s+(.+)$/);
+    if (orderedMatch) {
       flushParagraph();
       flushList();
-      orderedItems.push(trimmed.replace(/^\d+\.\s+/, ''));
+      orderedItems.push({
+        number: Number(orderedMatch[1]),
+        text: orderedMatch[2]
+      });
       return;
     }
 
-    if (trimmed.startsWith('### ')) {
+    const headingMatch = trimmed.match(/^(#{3,4})\s+(.+)$/);
+    if (headingMatch) {
       flushParagraph();
       flushList();
       flushOrderedList();
-      html.push(`<h3>${formatInline(trimmed.slice(4))}</h3>`);
+      const tagName = headingMatch[1].length === 4 ? 'h4' : 'h3';
+      html.push(`<${tagName}>${formatInline(headingMatch[2])}</${tagName}>`);
       return;
     }
 
@@ -235,6 +241,86 @@ function renderRichText(value) {
 
 function activeTranslations() {
   return translations[currentLanguage] || translations[defaultLanguage];
+}
+
+function normalizeLanguageKey(language) {
+  const normalized = String(language || '').trim().toLowerCase();
+  return translations[normalized] ? normalized : null;
+}
+
+function getUrlLanguage() {
+  const params = new URLSearchParams(location.search);
+  return normalizeLanguageKey(params.get('lang') || params.get('language') || params.get('locale'));
+}
+
+function getStoredLanguage() {
+  return normalizeLanguageKey(localStorage.getItem('lumiteach-language'));
+}
+
+function getInitialLanguage() {
+  return getUrlLanguage() || getStoredLanguage() || defaultLanguage;
+}
+
+function updateDocumentLanguage() {
+  document.documentElement.lang = currentLanguage;
+}
+
+function syncLanguageSelect() {
+  const languageSelect = document.getElementById('languageSelect');
+  if (languageSelect) languageSelect.value = currentLanguage;
+}
+
+function routeUrlFor(hash = '', language = currentLanguage) {
+  const params = new URLSearchParams(location.search);
+  params.delete('language');
+  params.delete('locale');
+  params.set('lang', normalizeLanguageKey(language) || defaultLanguage);
+
+  const query = params.toString();
+  return `${location.pathname}${query ? `?${query}` : ''}${hash || ''}`;
+}
+
+function replaceCurrentUrlWithLanguage(hash = location.hash) {
+  const nextUrl = routeUrlFor(hash);
+  const currentUrl = `${location.pathname}${location.search}${hash || ''}`;
+  if (nextUrl !== currentUrl) {
+    const key = hash ? decodeURIComponent(hash.replace('#', '')) : null;
+    history.replaceState({ key, language: currentLanguage }, '', nextUrl);
+  }
+}
+
+function persistCurrentLanguage() {
+  localStorage.setItem('lumiteach-language', currentLanguage);
+}
+
+function refreshForLanguage() {
+  updateDocumentLanguage();
+  syncLanguageSelect();
+  applyStaticTranslations();
+  renderCategories();
+  renderTree(currentArticleKey);
+  if (document.getElementById('articleView').classList.contains('active')) {
+    renderArticle(currentArticleKey);
+  }
+  renderSearchResults(document.getElementById('searchInput')?.value || '');
+}
+
+function setLanguage(language, options = {}) {
+  const { updateUrl = false, rerender = false } = options;
+  currentLanguage = normalizeLanguageKey(language) || defaultLanguage;
+  persistCurrentLanguage();
+  updateDocumentLanguage();
+  syncLanguageSelect();
+  if (updateUrl) replaceCurrentUrlWithLanguage();
+  if (rerender) refreshForLanguage();
+}
+
+function syncLanguageFromUrl(options = {}) {
+  const { rerender = false } = options;
+  const urlLanguage = getUrlLanguage();
+  if (!urlLanguage || urlLanguage === currentLanguage) return false;
+  setLanguage(urlLanguage, { rerender });
+  return true;
 }
 
 function tUI(key) {
@@ -801,7 +887,7 @@ function getHeadingTocTarget(heading, index) {
 function renderRightToc() {
   const rightToc = document.getElementById('rightToc');
   const articleContent = document.getElementById('articleContent');
-  const headings = Array.from(articleContent.querySelectorAll('.article-title, .article-section > h2, .section-copy h3'))
+  const headings = Array.from(articleContent.querySelectorAll('.article-title, .article-section > h2, .section-copy h3, .section-copy h4'))
     .filter((heading) => heading.textContent.trim());
 
   rightToc.innerHTML = headings.length ? `
@@ -890,10 +976,6 @@ function renderArticle(key) {
   `;
 
   renderRightToc();
-}
-
-function routeUrlFor(hash = '') {
-  return `${location.pathname}${location.search}${hash}`;
 }
 
 function showHome(options = {}) {
@@ -1003,7 +1085,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const hashKey = decodeURIComponent(location.hash.replace('#', ''));
   const initialKey = hashKey && isVisibleArticleKey(hashKey) ? hashKey : currentArticleKey;
   currentArticleKey = initialKey;
-  currentLanguage = localStorage.getItem('lumiteach-language') || defaultLanguage;
+  currentLanguage = getInitialLanguage();
+  persistCurrentLanguage();
+  updateDocumentLanguage();
   openTreePath(initialKey);
 
   applyStaticTranslations();
@@ -1023,15 +1107,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const languageSelect = document.getElementById('languageSelect');
   languageSelect.value = currentLanguage;
   languageSelect.addEventListener('change', (event) => {
-    currentLanguage = event.target.value;
-    localStorage.setItem('lumiteach-language', currentLanguage);
-    applyStaticTranslations();
-    renderCategories();
-    renderTree(currentArticleKey);
-    if (document.getElementById('articleView').classList.contains('active')) {
-      renderArticle(currentArticleKey);
-    }
-    renderSearchResults(document.getElementById('searchInput').value);
+    setLanguage(event.target.value, { updateUrl: true, rerender: true });
   });
 
   document.addEventListener('click', (event) => {
@@ -1052,6 +1128,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   window.addEventListener('popstate', () => {
+    syncLanguageFromUrl({ rerender: true });
     const nextKey = decodeURIComponent(location.hash.replace('#', ''));
     if (nextKey && isVisibleArticleKey(nextKey)) {
       showArticle(nextKey, { updateHistory: false });
@@ -1061,6 +1138,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   window.addEventListener('hashchange', () => {
+    syncLanguageFromUrl({ rerender: true });
     const nextKey = decodeURIComponent(location.hash.replace('#', ''));
     if (nextKey && isVisibleArticleKey(nextKey) && nextKey !== currentArticleKey) {
       showArticle(nextKey, { updateHistory: false });
@@ -1071,7 +1149,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.innerWidth > 960) closeMobileMenu();
   });
 
-  history.replaceState({ key: hashKey && isVisibleArticleKey(hashKey) ? hashKey : null }, '', location.href);
+  history.replaceState(
+    { key: hashKey && isVisibleArticleKey(hashKey) ? hashKey : null, language: currentLanguage },
+    '',
+    routeUrlFor(location.hash)
+  );
 
   if (hashKey && isVisibleArticleKey(hashKey)) showArticle(hashKey, { updateHistory: false });
 });

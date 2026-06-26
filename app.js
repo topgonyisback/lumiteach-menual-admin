@@ -984,6 +984,12 @@ function renderArticle(key) {
   renderRightToc();
 }
 
+function scrollArticleMainToTop(behavior = 'smooth') {
+  const articleMain = document.querySelector('.article-main');
+  if (!articleMain) return;
+  articleMain.scrollTo({ top: 0, behavior });
+}
+
 function showHome(options = {}) {
   const { updateHistory = true } = options;
   closeMobileMenu();
@@ -1016,7 +1022,7 @@ function showArticle(key, options = {}) {
     history.pushState({ key }, '', routeUrlFor(nextHash));
   }
 
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  scrollArticleMainToTop('auto');
 }
 
 function setMobileMenu(open) {

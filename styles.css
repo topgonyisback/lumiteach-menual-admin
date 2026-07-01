@@ -27,11 +27,14 @@
 
 html {
   scroll-behavior: smooth;
+  height: 100%;
   overflow-x: hidden;
 }
 
 body {
   margin: 0;
+  height: 100vh;
+  overflow: hidden;
   overflow-x: hidden;
   background: var(--bg);
   color: var(--text);
@@ -50,6 +53,17 @@ button, input, select { font: inherit; }
 button { cursor: pointer; }
 .view { display: none; }
 .view.active { display: block; }
+
+#homeView.active {
+  height: calc(100vh - 65px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+#articleView.active {
+  height: calc(100vh - 65px);
+  overflow: hidden;
+}
 
 .visually-hidden {
   position: absolute;

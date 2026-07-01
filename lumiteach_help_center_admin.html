@@ -34,7 +34,12 @@
       <h1>LumiTeach 관리자 매뉴얼</h1>
       <p>관리자 콘솔에서 회원, 권한, 기준 정보, 교육과정, 레슨 콘텐츠를 설정하고<br />운영하는 방법을 안내합니다.</p>
       <div class="search-wrap">
-        <span class="search-icon">⌕</span>
+        <span class="search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <circle cx="11" cy="11" r="6.5"></circle>
+            <path d="M16 16l4 4"></path>
+          </svg>
+        </span>
         <input class="search-input" id="searchInput" placeholder="아티클 제목, 기능명, 오류 상황을 검색해보세요" />
         <div class="search-results" id="searchResults"></div>
       </div>
